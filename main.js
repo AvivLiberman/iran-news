@@ -54,5 +54,4 @@ loadPolymarket();
 setInterval(loadAllFeeds, 5 * 60 * 1000);
 setInterval(loadPolymarket, 5 * 60 * 1000);
 
-// expose for the sort dropdown's onchange
-window.renderArticles = () => renderArticles(allArticles);
+document.getElementById("sortSelect").addEventListener("change", () => renderArticles(allArticles));
