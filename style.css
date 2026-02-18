@@ -340,6 +340,39 @@ main {
 
 .read-link:hover { text-decoration: underline; }
 
+/* ─── Source filter bar ──────────────────────────────────────────── */
+.source-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  margin-bottom: 1rem;
+}
+
+.source-filter-btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 980px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.source-filter-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.source-filter-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
 /* ─── Feed error banners ─────────────────────────────────────────── */
 .feed-errors { margin-bottom: 1rem; }
 
