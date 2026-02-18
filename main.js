@@ -7,6 +7,58 @@ import { loadPolymarket } from "./polymarket.js";
 
 let allArticles = [];
 let successCount = 0;
+let activeSource = null;
+
+function getSourceGroup(label) {
+  if (label.startsWith("Ynet")) return "Ynet";
+  if (label.startsWith("מעריב")) return "מעריב";
+  if (label.startsWith("וואלה")) return "וואלה";
+  if (label.startsWith("גלובס")) return "גלובס";
+  if (label === "ישראל היום") return "ישראל היום";
+  return label;
+}
+
+function renderSourceFilter() {
+  const bar = document.getElementById("sourceFilterBar");
+  if (!bar) return;
+
+  const groups = [...new Set(allArticles.map((a) => getSourceGroup(a.source)))].sort();
+
+  if (groups.length <= 1) {
+    bar.style.display = "none";
+    return;
+  }
+
+  // Reset activeSource if it no longer exists in the loaded articles
+  if (activeSource !== null && !groups.includes(activeSource)) {
+    activeSource = null;
+  }
+
+  bar.style.display = "";
+  bar.innerHTML =
+    `<button class="source-filter-btn${activeSource === null ? " active" : ""}" data-group="">הכל</button>` +
+    groups
+      .map(
+        (g) =>
+          `<button class="source-filter-btn${activeSource === g ? " active" : ""}" data-group="${g}">${g}</button>`,
+      )
+      .join("");
+
+  bar.querySelectorAll(".source-filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeSource = btn.dataset.group || null;
+      renderSourceFilter();
+      applyAndRender();
+    });
+  });
+}
+
+function applyAndRender() {
+  const filtered = activeSource
+    ? allArticles.filter((a) => getSourceGroup(a.source) === activeSource)
+    : allArticles;
+  renderArticles(filtered);
+}
 
 async function loadAllFeeds() {
   allArticles = [];
@@ -44,7 +96,8 @@ async function loadAllFeeds() {
   }
 
   updateStats(allArticles.length, successCount);
-  renderArticles(allArticles);
+  renderSourceFilter();
+  applyAndRender();
   setStatus("live", `${allArticles.length} כתבות · ${successCount} מקורות`);
 }
 
@@ -53,4 +106,3 @@ loadAllFeeds();
 loadPolymarket();
 setInterval(loadAllFeeds, 5 * 60 * 1000);
 setInterval(loadPolymarket, 5 * 60 * 1000);
-
