@@ -135,15 +135,20 @@ h1 span { color: var(--accent); }
 }
 
 .filter-select {
-  padding: 0.5rem 0.85rem;
+  padding: 0.5rem 0.85rem 0.5rem 2rem;
   border-radius: 980px;
   border: 1px solid var(--border2);
-  background: var(--surface);
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2386868b' d='M5 6 0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.75rem center;
   color: var(--text);
   font-size: 0.875rem;
   font-family: inherit;
   cursor: pointer;
   direction: rtl;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .filter-select:focus { outline: none; border-color: var(--accent); }
@@ -216,6 +221,13 @@ main {
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Feed controls ──────────────────────────────────────────────── */
+.feed-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
 
 /* ─── Feed grid ──────────────────────────────────────────────────── */
 .feed-grid {
