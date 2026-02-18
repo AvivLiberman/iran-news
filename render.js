@@ -17,11 +17,6 @@ export function renderArticles(articles) {
   showState("grid");
 
   sorted.forEach((article) => {
-    const tagsHtml = article.tags
-      .slice(0, 5)
-      .map((t) => `<span class="tag">${escHtml(t)}</span>`)
-      .join("");
-
     const imgHtml = article.image
       ? `<img class="card-image" src="${escHtml(article.image)}" alt="" loading="lazy" onerror="this.style.display='none'">`
       : "";
@@ -37,9 +32,8 @@ export function renderArticles(articles) {
           </div>
           <p class="card-title" dir="rtl">${escHtml(article.title)}</p>
           ${article.desc ? `<p class="card-desc" dir="rtl">${escHtml(article.desc)}</p>` : ""}
-          ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
         </div>
-        <div class="card-footer">
+        <div class="card-footer"  dir="ltr">
           <a class="read-link" href="${escHtml(article.link)}" target="_blank" rel="noopener">
             קרא &#x2197;
           </a>
