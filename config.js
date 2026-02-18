@@ -64,7 +64,9 @@ export const MIN_SCORE = 4;
 // ── Fetch strategy ────────────────────────────────────────────────────────────
 // Raw XML through CORS proxies (tried in order)
 export const XML_PROXIES = [
-  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://rss-proxy.aviv-liberman.workers.dev/?url=${encodeURIComponent(u)}`,
   (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  (u) => `https://proxy.cors.sh/${u}`,
 ];
