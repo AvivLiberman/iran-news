@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ניטור איראן</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="poly-section" id="polymarketSection">
+    <div class="poly-section-header">
+      <a class="poly-section-link" href="https://polymarket.com/event/us-strikes-iran-by" target="_blank"
+        rel="noopener">
+        polymarket.com ↗
+      </a>
+    </div>
+    <div class="poly-body" id="polyBody">
+      <span class="poly-status">טוען נתוני שוק...</span>
+    </div>
+  </div>
+
+  <main id="main">
+    <div class="feed-errors" id="feedErrors"></div>
+    <div class="state-msg" id="loadingState">
+      <div class="spinner"></div>
+      <h2>טוען כתבות...</h2>
+
+    </div>
+    <div class="state-msg" id="emptyState" style="display:none">
+      <h2>אין כתבות כרגע</h2>
+      <p>לא נמצאו כתבות הקשורות לאיראן כרגע. נסה לרענן.</p>
+    </div>
+
+    <div class="feed-grid" id="feedGrid" style="display:none"></div>
+  </main>
+
+  <footer>
+    מקורות:
+    <a href="https://www.ynet.co.il" target="_blank" rel="noopener">Ynet</a> ·
+    <a href="https://www.maariv.co.il" target="_blank" rel="noopener">מעריב</a> ·
+    <a href="https://www.walla.co.il" target="_blank" rel="noopener">וואלה</a> ·
+    <a href="https://www.globes.co.il" target="_blank" rel="noopener">גלובס</a> ·
+    <a href="https://www.israelhayom.co.il" target="_blank" rel="noopener">ישראל היום</a> ·
+    <a href="https://www.themarker.com" target="_blank" rel="noopener">TheMarker</a>
+    &nbsp;·&nbsp; נבנה לפרסום ב-<a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+  </footer>
+
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>
