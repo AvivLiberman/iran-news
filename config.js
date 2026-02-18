@@ -62,11 +62,9 @@ export const IRAN_KEYWORDS = [
 export const MIN_SCORE = 4;
 
 // ── Fetch strategy ────────────────────────────────────────────────────────────
-// 1. rss2json.com — RSS→JSON API with CORS; free tier gives 10 items/feed
-// 2-4. Raw XML fallbacks through CORS proxies
-export const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
+// Raw XML through CORS proxies (tried in order)
 export const XML_PROXIES = [
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
   (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
