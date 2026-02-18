@@ -54,4 +54,3 @@ loadPolymarket();
 setInterval(loadAllFeeds, 5 * 60 * 1000);
 setInterval(loadPolymarket, 5 * 60 * 1000);
 
-document.getElementById("sortSelect").addEventListener("change", () => renderArticles(allArticles));

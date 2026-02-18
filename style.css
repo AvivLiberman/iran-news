@@ -134,25 +134,6 @@ h1 span { color: var(--accent); }
   color: #fff;
 }
 
-.filter-select {
-  padding: 0.5rem 0.85rem 0.5rem 2rem;
-  border-radius: 980px;
-  border: 1px solid var(--border2);
-  background-color: var(--surface);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2386868b' d='M5 6 0 0h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: left 0.75rem center;
-  color: var(--text);
-  font-size: 0.875rem;
-  font-family: inherit;
-  cursor: pointer;
-  direction: rtl;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.filter-select:focus { outline: none; border-color: var(--accent); }
-
 /* ─── Stats ──────────────────────────────────────────────────────── */
 .stats {
   display: flex;
@@ -221,13 +202,6 @@ main {
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* ─── Feed controls ──────────────────────────────────────────────── */
-.feed-controls {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
-}
 
 /* ─── Feed grid ──────────────────────────────────────────────────── */
 .feed-grid {
@@ -305,6 +279,8 @@ main {
   font-weight: 600;
   line-height: 1.35;
   color: var(--text);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .card-title a {
@@ -319,6 +295,8 @@ main {
   color: var(--muted);
   line-height: 1.55;
   flex: 1;
+  overflow-wrap: break-word;
+  word-break: break-word;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -348,32 +326,6 @@ main {
   align-items: center;
   justify-content: space-between;
 }
-
-.relevance {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  color: var(--muted2);
-}
-
-.relevance-bars {
-  display: flex;
-  gap: 2px;
-  align-items: flex-end;
-}
-
-.relevance-bars span {
-  display: block;
-  width: 4px;
-  border-radius: 2px;
-  background: var(--border2);
-}
-
-.relevance-bars span.active          { background: var(--muted); }
-.relevance-bars span:nth-child(1)    { height: 6px; }
-.relevance-bars span:nth-child(2)    { height: 10px; }
-.relevance-bars span:nth-child(3)    { height: 14px; }
 
 .read-link {
   font-size: 0.8rem;
