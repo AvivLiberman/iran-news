@@ -1,6 +1,6 @@
-import { FEEDS, MIN_SCORE } from "./config.js";
+import { FEEDS } from "./config.js";
 import { fetchFeed } from "./fetch.js";
-import { scoreArticle } from "./score.js";
+import { scoreArticle, isArticleRelevant } from "./score.js";
 import { renderArticles } from "./render.js";
 import { showState, setStatus, updateStats } from "./ui.js";
 import { loadPolymarket } from "./polymarket.js";
@@ -79,7 +79,7 @@ async function loadAllFeeds() {
         if (seen.has(key)) continue;
         seen.add(key);
         const score = scoreArticle(article);
-        if (score >= MIN_SCORE) allArticles.push({ ...article, score });
+        if (isArticleRelevant(article, score)) allArticles.push({ ...article, score });
       }
     } else {
       failedLabels.push(FEEDS[i].label);
