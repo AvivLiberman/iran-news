@@ -106,3 +106,11 @@ loadAllFeeds();
 loadPolymarket();
 setInterval(loadAllFeeds, 5 * 60 * 1000);
 setInterval(loadPolymarket, 5 * 60 * 1000);
+
+document.getElementById("refreshBtn").addEventListener("click", () => {
+  const btn = document.getElementById("refreshBtn");
+  btn.classList.add("spinning");
+  btn.addEventListener("animationend", () => btn.classList.remove("spinning"), { once: true });
+  loadAllFeeds();
+  loadPolymarket();
+});
