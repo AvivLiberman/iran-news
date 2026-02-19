@@ -23,7 +23,7 @@ export const IRAN_KEYWORDS = [
   { term: "האיראני", weight: 10 },
   { term: "האיראנים", weight: 10 },
   { term: "האיראנית", weight: 10 },
-  { term: "טהרן", weight: 8 },
+  { term: "טהרן", weight: 4 },
   { term: "חמינאי", weight: 8 },
   { term: "חמנאי", weight: 8 },
   { term: "חמיני", weight: 8 },
@@ -59,7 +59,7 @@ export const IRAN_KEYWORDS = [
   { term: "centrifuge", weight: 6 },
 ];
 
-export const MIN_SCORE = 4;
+export const MIN_SCORE = 8;
 
 // ── Fetch strategy ────────────────────────────────────────────────────────────
 // Raw XML through CORS proxies (tried in order)
