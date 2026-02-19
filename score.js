@@ -12,6 +12,11 @@ export function scoreArticle(article) {
   return score;
 }
 
+export function titleHasIranKeyword(article) {
+  const title = (article.title || "").toLowerCase();
+  return IRAN_KEYWORDS.some(({ term }) => title.includes(term.toLowerCase()));
+}
+
 export function relevanceLevel(score) {
   if (score >= 20) return 3;
   if (score >= 10) return 2;
