@@ -563,7 +563,7 @@ main {
 }
 
 .poly-graph-axis-label {
-  font-size: 10px;
+  font-size: 13px;
   fill: #86868b;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -826,5 +826,10 @@ footer a:hover { text-decoration: underline; }
 
   .view-toolbar {
     padding-top: 0.5rem;
+  }
+
+  /* Graph date labels — bump SVG font-size to stay legible after scale-down */
+  .poly-graph-axis-label {
+    font-size: 18px;
   }
 }
