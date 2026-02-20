@@ -568,6 +568,17 @@ main {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+.poly-graph-peak-dot {
+  fill: var(--accent);
+}
+
+.poly-graph-peak-label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--accent);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
 /* ─── Footer ─────────────────────────────────────────────────────── */
 footer {
   text-align: center;

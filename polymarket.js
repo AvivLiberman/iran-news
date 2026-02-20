@@ -81,7 +81,7 @@ function renderGraph(bodyEl) {
   }
 
   const W = 600, H = 220;
-  const PAD = { top: 16, right: 16, bottom: 54, left: 16 };
+  const PAD = { top: 28, right: 16, bottom: 54, left: 16 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
 
@@ -136,18 +136,33 @@ function renderGraph(bodyEl) {
     );
   }
 
-  /* date labels every 3rd point, no dots */
+  /* peak value label */
+  const peakIdx = pcts.indexOf(rawMax);
+  const peakX = xOf(peakIdx);
+  const peakY = yOf(rawMax);
+  const peakAnchor = peakIdx === 0 ? "start" : peakIdx === data.length - 1 ? "end" : "middle";
+  parts.push(
+    `<circle cx="${peakX.toFixed(1)}" cy="${peakY.toFixed(1)}" r="3" class="poly-graph-peak-dot"/>`,
+    `<text class="poly-graph-peak-label" x="${peakX.toFixed(1)}" y="${(peakY - 8).toFixed(1)}" text-anchor="${peakAnchor}">${rawMax.toFixed(1)}%</text>`
+  );
+
+  /* date labels every 3rd point + always first and last, no dots */
+  const labelIndices = new Set();
   for (let i = 0; i < data.length; i++) {
-    if (i % 3 === 0) {
-      const m = data[i];
-      const x = xOf(i);
-      const dateLabel = new Date(m.dateStr + "T00:00:00").toLocaleDateString("en-GB", {
-        day: "numeric", month: "short",
-      });
-      parts.push(
-        `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 26).toFixed(1)}" text-anchor="middle">${dateLabel}</text>`
-      );
-    }
+    if (i % 3 === 0) labelIndices.add(i);
+  }
+  labelIndices.add(data.length - 1);
+
+  for (const i of [...labelIndices].sort((a, b) => a - b)) {
+    const m = data[i];
+    const x = xOf(i);
+    const dateLabel = new Date(m.dateStr + "T00:00:00").toLocaleDateString("en-GB", {
+      day: "numeric", month: "short",
+    });
+    const anchor = i === 0 ? "start" : i === data.length - 1 ? "end" : "middle";
+    parts.push(
+      `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 26).toFixed(1)}" text-anchor="${anchor}">${dateLabel}</text>`
+    );
   }
 
   parts.push("</svg>");
