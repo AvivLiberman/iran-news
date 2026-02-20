@@ -415,6 +415,7 @@ main {
   font-size: 0.8rem;
   color: var(--accent);
   text-decoration: none;
+  margin-left: 2.5rem;
   direction: ltr;
   white-space: nowrap;
 }
@@ -538,8 +539,8 @@ main {
 /* ─── Polymarket graph ───────────────────────────────────────────── */
 .poly-graph-wrap {
   width: 100%;
-  overflow: hidden;
   direction: ltr;
+  background: transparent;
 }
 
 .poly-graph-wrap svg {
@@ -549,38 +550,16 @@ main {
 }
 
 .poly-graph-grid {
-  stroke: var(--border);
+  stroke: var(--border2);
   stroke-width: 1;
-}
-
-.poly-graph-area {
-  fill: #0071e3;
-  opacity: 0.08;
 }
 
 .poly-graph-line {
   fill: none;
-  stroke: #0071e3;
-  stroke-width: 2;
+  stroke: var(--accent);
+  stroke-width: 2.5;
   stroke-linejoin: round;
   stroke-linecap: round;
-}
-
-.poly-graph-dot {
-  fill: #0071e3;
-  stroke: var(--surface);
-  stroke-width: 2;
-}
-
-.poly-graph-dot--today {
-  stroke-width: 2.5;
-}
-
-.poly-graph-today-line {
-  stroke: #0071e3;
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-  opacity: 0.35;
 }
 
 .poly-graph-axis-label {

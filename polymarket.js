@@ -5,6 +5,7 @@ const POLY_URL = "https://gamma-api.polymarket.com/events?slug=us-strikes-iran-b
 let _marketList = [];
 let _graphData  = [];
 let _currentView = "cards";
+let _listenersAttached = false;
 
 function dateFromTitle(title) {
   if (!title) return null;
@@ -79,18 +80,14 @@ function renderGraph(bodyEl) {
     return;
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split("T")[0];
-
-  const W = 600, H = 200;
-  const PAD = { top: 28, right: 20, bottom: 48, left: 44 };
+  const W = 600, H = 180;
+  const PAD = { top: 16, right: 16, bottom: 32, left: 16 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
 
-  const pcts    = data.map((m) => m.pct * 100);
-  const rawMax  = Math.max(...pcts);
-  const maxPct  = Math.max(Math.ceil(rawMax / 10) * 10, 20);
+  const pcts   = data.map((m) => m.pct * 100);
+  const rawMax = Math.max(...pcts);
+  const maxPct = Math.max(Math.ceil(rawMax / 10) * 10, 20);
 
   const xOf = (i) =>
     data.length < 2
@@ -98,80 +95,57 @@ function renderGraph(bodyEl) {
       : PAD.left + (i / (data.length - 1)) * chartW;
   const yOf = (pct) => PAD.top + chartH * (1 - pct / maxPct);
 
-  const gridSteps = [0, 25, 50, 75, 100].filter((v) => v <= maxPct);
-
+  const uid = "pg" + Math.random().toString(36).slice(2, 7);
   const parts = [`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`];
 
-  /* grid lines + y-axis labels */
+  /* gradient definition */
+  parts.push(
+    `<defs>`,
+    `  <linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">`,
+    `    <stop offset="0%" stop-color="#0071e3" stop-opacity="0.15"/>`,
+    `    <stop offset="100%" stop-color="#0071e3" stop-opacity="0"/>`,
+    `  </linearGradient>`,
+    `</defs>`
+  );
+
+  /* subtle horizontal grid lines only, no labels */
+  const gridSteps = [25, 50, 75].filter((v) => v <= maxPct);
   for (const g of gridSteps) {
     const y = yOf(g);
     parts.push(
-      `<line class="poly-graph-grid" x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W - PAD.right}" y2="${y.toFixed(1)}"/>`,
-      `<text class="poly-graph-axis-label" x="${PAD.left - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end">${g}%</text>`
+      `<line class="poly-graph-grid" x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W - PAD.right}" y2="${y.toFixed(1)}"/>`
     );
   }
 
-  /* area fill */
+  /* smooth bezier curve + gradient area */
   if (data.length > 1) {
-    const pts    = data.map((m, i) => `${xOf(i).toFixed(1)},${yOf(m.pct * 100).toFixed(1)}`).join(" ");
-    const baseY  = yOf(0).toFixed(1);
-    const firstX = xOf(0).toFixed(1);
-    const lastX  = xOf(data.length - 1).toFixed(1);
-    parts.push(
-      `<polygon class="poly-graph-area" points="${firstX},${baseY} ${pts} ${lastX},${baseY}"/>`
-    );
-  }
+    const xs = data.map((_, i) => xOf(i));
+    const ys = data.map((m) => yOf(m.pct * 100));
 
-  /* line */
-  if (data.length > 1) {
-    const d = data
-      .map((m, i) => `${i === 0 ? "M" : "L"} ${xOf(i).toFixed(1)} ${yOf(m.pct * 100).toFixed(1)}`)
-      .join(" ");
-    parts.push(`<path class="poly-graph-line" d="${d}"/>`);
-  }
-
-  /* dots + labels */
-  for (let i = 0; i < data.length; i++) {
-    const m       = data[i];
-    const x       = xOf(i);
-    const y       = yOf(m.pct * 100);
-    const isToday = m.dateStr === todayStr;
-    const pctLabel = (m.pct * 100).toFixed(0) + "%";
-    const dateLabel = new Date(m.dateStr + "T00:00:00").toLocaleDateString("en-GB", {
-      day: "numeric", month: "short",
-    });
-
-    /* today vertical marker */
-    if (isToday) {
-      parts.push(
-        `<line class="poly-graph-today-line" x1="${x.toFixed(1)}" y1="${PAD.top}" x2="${x.toFixed(1)}" y2="${(PAD.top + chartH).toFixed(1)}"/>`
-      );
+    let linePath = `M ${xs[0].toFixed(1)} ${ys[0].toFixed(1)}`;
+    for (let i = 0; i < xs.length - 1; i++) {
+      const cpx = ((xs[i] + xs[i + 1]) / 2).toFixed(1);
+      linePath += ` C ${cpx} ${ys[i].toFixed(1)}, ${cpx} ${ys[i + 1].toFixed(1)}, ${xs[i + 1].toFixed(1)} ${ys[i + 1].toFixed(1)}`;
     }
 
-    /* dot */
-    const r = isToday ? 5 : 4;
+    const baseY  = yOf(0).toFixed(1);
+    const areaPath = `${linePath} L ${xs[xs.length - 1].toFixed(1)} ${baseY} L ${xs[0].toFixed(1)} ${baseY} Z`;
     parts.push(
-      `<circle class="${"poly-graph-dot" + (isToday ? " poly-graph-dot--today" : "")}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>`
+      `<path fill="url(#${uid})" d="${areaPath}"/>`,
+      `<path class="poly-graph-line" d="${linePath}"/>`
     );
+  }
 
-    /* value label above dot */
-    const fw    = isToday ? "700" : "400";
-    const fill  = isToday ? "#0071e3" : "";
-    const fillAttr = fill ? ` fill="${fill}"` : "";
-    parts.push(
-      `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(y - 9).toFixed(1)}" text-anchor="middle" font-weight="${fw}"${fillAttr}>${pctLabel}</text>`
-    );
-
-    /* x-axis date label */
-    const todayFw   = isToday ? "700" : "400";
-    const todayFill = isToday ? ` fill="#0071e3"` : "";
-    parts.push(
-      `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 16).toFixed(1)}" text-anchor="middle" font-weight="${todayFw}"${todayFill}>${dateLabel}</text>`
-    );
-
-    if (isToday) {
+  /* date labels every 3rd point, no dots */
+  for (let i = 0; i < data.length; i++) {
+    if (i % 3 === 0) {
+      const m = data[i];
+      const x = xOf(i);
+      const dateLabel = new Date(m.dateStr + "T00:00:00").toLocaleDateString("en-GB", {
+        day: "numeric", month: "short",
+      });
       parts.push(
-        `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 32).toFixed(1)}" text-anchor="middle" font-weight="700" fill="#0071e3">היום</text>`
+        `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 18).toFixed(1)}" text-anchor="middle">${dateLabel}</text>`
       );
     }
   }
@@ -248,22 +222,25 @@ export async function loadPolymarket() {
 
     _graphData = buildGraphData(_marketList);
 
-    /* wire toggle buttons */
-    document.getElementById("polyBtnCards")?.addEventListener("click", () => {
-      if (_currentView === "cards") return;
-      _currentView = "cards";
-      setActivePolyBtn("cards");
-      renderCards(bodyEl);
-    });
-    document.getElementById("polyBtnGraph")?.addEventListener("click", () => {
-      if (_currentView === "graph") return;
-      _currentView = "graph";
-      setActivePolyBtn("graph");
-      renderGraph(bodyEl);
-    });
+    /* wire toggle buttons once */
+    if (!_listenersAttached) {
+      _listenersAttached = true;
+      document.getElementById("polyBtnCards")?.addEventListener("click", () => {
+        if (_currentView === "cards") return;
+        _currentView = "cards";
+        setActivePolyBtn("cards");
+        renderCards(document.getElementById("polyBody"));
+      });
+      document.getElementById("polyBtnGraph")?.addEventListener("click", () => {
+        if (_currentView === "graph") return;
+        _currentView = "graph";
+        setActivePolyBtn("graph");
+        renderGraph(document.getElementById("polyBody"));
+      });
+    }
 
-    /* initial render */
-    renderCards(bodyEl);
+    /* re-render in whichever view is active */
+    _currentView === "graph" ? renderGraph(bodyEl) : renderCards(bodyEl);
   } catch {
     bodyEl.innerHTML = '<span class="poly-status">לא ניתן לטעון נתוני Polymarket</span>';
   }
