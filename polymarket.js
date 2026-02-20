@@ -146,12 +146,22 @@ function renderGraph(bodyEl) {
     `<text class="poly-graph-peak-label" x="${peakX.toFixed(1)}" y="${(peakY - 8).toFixed(1)}" text-anchor="${peakAnchor}">${rawMax.toFixed(1)}%</text>`
   );
 
-  /* date labels every 3rd point + always first and last, no dots */
+  /* date labels: always first (today) and last, equally spaced in between
+     with a minimum pixel gap so labels never crowd each other */
   const labelIndices = new Set();
-  for (let i = 0; i < data.length; i++) {
-    if (i % 3 === 0) labelIndices.add(i);
+  if (data.length <= 1) {
+    labelIndices.add(0);
+  } else {
+    const MIN_PX_GAP = 72; // minimum pixels between label centres
+    const maxLabels = Math.max(2, Math.min(data.length, Math.floor(chartW / MIN_PX_GAP) + 1));
+    for (let step = 0; step < maxLabels; step++) {
+      const idx = Math.round((data.length - 1) * step / (maxLabels - 1));
+      labelIndices.add(idx);
+    }
+    // safety: always include first and last
+    labelIndices.add(0);
+    labelIndices.add(data.length - 1);
   }
-  labelIndices.add(data.length - 1);
 
   for (const i of [...labelIndices].sort((a, b) => a - b)) {
     const m = data[i];
