@@ -1,13 +1,14 @@
 import { FEEDS, MIN_SCORE } from "./config.js";
 import { fetchFeed } from "./fetch.js";
 import { scoreArticle, titleHasIranKeyword } from "./score.js";
-import { renderArticles } from "./render.js";
-import { showState, setStatus, updateStats } from "./ui.js";
+import { renderArticles, renderTimeline } from "./render.js";
+import { showState, setStatus, updateStats, showViewToolbar } from "./ui.js";
 import { loadPolymarket } from "./polymarket.js";
 
 let allArticles = [];
 let successCount = 0;
 let activeSource = null;
+let viewMode = localStorage.getItem("viewMode") || "grid";
 
 function getSourceGroup(label) {
   if (label.startsWith("Ynet")) return "Ynet";
@@ -53,11 +54,21 @@ function renderSourceFilter() {
   });
 }
 
+function updateViewButtons() {
+  const btnGrid = document.getElementById("btnGrid");
+  const btnTimeline = document.getElementById("btnTimeline");
+  if (!btnGrid || !btnTimeline) return;
+  btnGrid.classList.toggle("active", viewMode === "grid");
+  btnGrid.setAttribute("aria-pressed", String(viewMode === "grid"));
+  btnTimeline.classList.toggle("active", viewMode === "timeline");
+  btnTimeline.setAttribute("aria-pressed", String(viewMode === "timeline"));
+}
+
 function applyAndRender() {
   const filtered = activeSource
     ? allArticles.filter((a) => getSourceGroup(a.source) === activeSource)
     : allArticles;
-  renderArticles(filtered);
+  viewMode === "timeline" ? renderTimeline(filtered) : renderArticles(filtered);
 }
 
 async function loadAllFeeds() {
@@ -97,11 +108,27 @@ async function loadAllFeeds() {
 
   updateStats(allArticles.length, successCount);
   renderSourceFilter();
+  showViewToolbar(true);
+  updateViewButtons();
   applyAndRender();
   setStatus("live", `${allArticles.length} כתבות · ${successCount} מקורות`);
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
+document.getElementById("btnGrid").addEventListener("click", () => {
+  viewMode = "grid";
+  localStorage.setItem("viewMode", "grid");
+  updateViewButtons();
+  applyAndRender();
+});
+
+document.getElementById("btnTimeline").addEventListener("click", () => {
+  viewMode = "timeline";
+  localStorage.setItem("viewMode", "timeline");
+  updateViewButtons();
+  applyAndRender();
+});
+
 loadAllFeeds();
 loadPolymarket();
 setInterval(loadAllFeeds, 5 * 60 * 1000);

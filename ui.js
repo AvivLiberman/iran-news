@@ -5,6 +5,13 @@ export function showState(state) {
     state === "empty" ? "" : "none";
   document.getElementById("feedGrid").style.display =
     state === "grid" ? "" : "none";
+  document.getElementById("feedTimeline").style.display =
+    state === "timeline" ? "" : "none";
+}
+
+export function showViewToolbar(visible) {
+  const el = document.getElementById("viewToolbar");
+  if (el) el.style.display = visible ? "" : "none";
 }
 
 export function setStatus(type, text) {

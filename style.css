@@ -552,6 +552,140 @@ footer a:hover { text-decoration: underline; }
   to   { transform: rotate(360deg); }
 }
 
+/* ─── View toggle toolbar ────────────────────────────────────────── */
+.view-toolbar {
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.75rem 0 0.5rem;
+}
+
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.3rem 0.85rem;
+  border-radius: 980px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.view-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.view-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ─── Timeline view ──────────────────────────────────────────────── */
+/*
+ * Layout: .feed-timeline has padding-right: 0.5rem (8px) for the dot/track area.
+ * The ::before track sits at right: 0.75rem (12px), center at 13px from container right.
+ * .tl-dot is the first (rightmost in RTL) flex child; its right edge = content area right
+ * = 8px from container right, so its center = 13px — aligns with the track. ✓
+ */
+.feed-timeline {
+  position: relative;
+  padding-right: 0.5rem;
+}
+
+.feed-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0.75rem;
+  width: 2px;
+  background: var(--border2);
+  border-radius: 1px;
+}
+
+.tl-group-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1.25rem 0 0.4rem;
+  /* extend into container padding to mask the track behind label text */
+  margin-right: -0.5rem;
+  padding-right: 0.5rem;
+  background: var(--bg);
+  position: relative;
+  z-index: 1;
+}
+
+.feed-timeline > .tl-group-label:first-child {
+  padding-top: 0.25rem;
+}
+
+.tl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+}
+
+/* In RTL: .tl-dot is the first flex child → appears on the RIGHT */
+.tl-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  background: var(--muted2);
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.tl-dot--1 { background: #86868b; }
+.tl-dot--2 { background: #ff9f0a; }
+.tl-dot--3 { background: #ff3b30; }
+
+.tl-content {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.tl-time {
+  font-size: 0.72rem;
+  color: var(--muted2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tl-headline {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  flex: 1;
+  min-width: 160px;
+}
+
+.tl-headline:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
 /* ─── Responsive ─────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   /* Header */
@@ -618,5 +752,15 @@ footer a:hover { text-decoration: underline; }
   footer {
     padding: 1.5rem 1rem;
     line-height: 2;
+  }
+
+  /* Timeline */
+  .tl-headline {
+    font-size: 0.85rem;
+    min-width: 120px;
+  }
+
+  .view-toolbar {
+    padding-top: 0.5rem;
   }
 }
