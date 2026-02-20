@@ -839,8 +839,12 @@ footer a:hover { text-decoration: underline; }
     padding-top: 0.5rem;
   }
 
-  /* Graph date labels — bump SVG font-size to stay legible after scale-down */
+  /* Graph labels — bump SVG font-sizes to stay legible after scale-down */
   .poly-graph-axis-label {
     font-size: 18px;
+  }
+
+  .poly-graph-peak-label {
+    font-size: 20px;
   }
 }
