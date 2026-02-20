@@ -156,6 +156,18 @@ function renderGraph(bodyEl) {
   /* date labels: today (first), middle, last */
   const last = data.length - 1;
   const mid  = Math.round(last / 2);
+
+  /* value labels for first and middle points (skip if already the peak) */
+  const valueIndices = [0, mid].filter((i) => i !== peakIdx && i < data.length);
+  for (const i of valueIndices) {
+    const vx = xOf(i);
+    const vy = yOf(pcts[i]);
+    const anchor = i === 0 ? "start" : "middle";
+    parts.push(
+      `<circle cx="${vx.toFixed(1)}" cy="${vy.toFixed(1)}" r="3" class="poly-graph-peak-dot"/>`,
+      `<text class="poly-graph-peak-label" x="${vx.toFixed(1)}" y="${(vy - 8).toFixed(1)}" text-anchor="${anchor}">${pcts[i].toFixed(1)}%</text>`
+    );
+  }
   const labelIndices = data.length <= 1
     ? [0]
     : data.length === 2
