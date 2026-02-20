@@ -81,7 +81,7 @@ function renderGraph(bodyEl) {
   }
 
   const W = 600, H = 220;
-  const PAD = { top: 16, right: 16, bottom: 54, left: 16 };
+  const PAD = { top: 28, right: 16, bottom: 54, left: 16 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
 
@@ -135,6 +135,16 @@ function renderGraph(bodyEl) {
       `<path class="poly-graph-line" d="${linePath}"/>`
     );
   }
+
+  /* peak value label */
+  const peakIdx = pcts.indexOf(rawMax);
+  const peakX = xOf(peakIdx);
+  const peakY = yOf(rawMax);
+  const peakAnchor = peakIdx === 0 ? "start" : peakIdx === data.length - 1 ? "end" : "middle";
+  parts.push(
+    `<circle cx="${peakX.toFixed(1)}" cy="${peakY.toFixed(1)}" r="3" class="poly-graph-peak-dot"/>`,
+    `<text class="poly-graph-peak-label" x="${peakX.toFixed(1)}" y="${(peakY - 8).toFixed(1)}" text-anchor="${peakAnchor}">${rawMax.toFixed(1)}%</text>`
+  );
 
   /* date labels every 3rd point + always first and last, no dots */
   const labelIndices = new Set();
