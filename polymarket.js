@@ -7,10 +7,17 @@ let _graphData  = [];
 let _currentView = "cards";
 let _listenersAttached = false;
 
+function toLocalDateStr(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function dateFromTitle(title) {
   if (!title) return null;
   const d = new Date(`${title}, ${new Date().getFullYear()}`);
-  if (!isNaN(d)) return d.toISOString().split("T")[0];
+  if (!isNaN(d)) return toLocalDateStr(d);
   return null;
 }
 
@@ -18,7 +25,7 @@ function dateFromTitle(title) {
 function buildGraphData(marketList) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(today);
 
   const future = marketList.filter((m) => m.dateStr >= todayStr);
   const result = [];
@@ -46,7 +53,7 @@ function renderCards(bodyEl) {
   const cards = Array.from({ length: 8 }, (_, i) => {
     const d = new Date(now);
     d.setDate(d.getDate() + i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const entry = marketForDate(dateStr);
 
     const label = i === 0 ? "היום" : i === 1 ? "מחר" : HE_DAYS[d.getDay()];
@@ -146,22 +153,14 @@ function renderGraph(bodyEl) {
     `<text class="poly-graph-peak-label" x="${peakX.toFixed(1)}" y="${(peakY - 8).toFixed(1)}" text-anchor="${peakAnchor}">${rawMax.toFixed(1)}%</text>`
   );
 
-  /* date labels: always first (today) and last, equally spaced in between
-     with a minimum pixel gap so labels never crowd each other */
-  const labelIndices = new Set();
-  if (data.length <= 1) {
-    labelIndices.add(0);
-  } else {
-    const MIN_PX_GAP = 72; // minimum pixels between label centres
-    const maxLabels = Math.max(2, Math.min(data.length, Math.floor(chartW / MIN_PX_GAP) + 1));
-    for (let step = 0; step < maxLabels; step++) {
-      const idx = Math.round((data.length - 1) * step / (maxLabels - 1));
-      labelIndices.add(idx);
-    }
-    // safety: always include first and last
-    labelIndices.add(0);
-    labelIndices.add(data.length - 1);
-  }
+  /* date labels: today (first), middle, last */
+  const last = data.length - 1;
+  const mid  = Math.round(last / 2);
+  const labelIndices = data.length <= 1
+    ? [0]
+    : data.length === 2
+    ? [0, last]
+    : [0, mid, last];
 
   for (const i of [...labelIndices].sort((a, b) => a - b)) {
     const m = data[i];
