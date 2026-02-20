@@ -7,10 +7,17 @@ let _graphData  = [];
 let _currentView = "cards";
 let _listenersAttached = false;
 
+function toLocalDateStr(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function dateFromTitle(title) {
   if (!title) return null;
   const d = new Date(`${title}, ${new Date().getFullYear()}`);
-  if (!isNaN(d)) return d.toISOString().split("T")[0];
+  if (!isNaN(d)) return toLocalDateStr(d);
   return null;
 }
 
@@ -18,7 +25,7 @@ function dateFromTitle(title) {
 function buildGraphData(marketList) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(today);
 
   const future = marketList.filter((m) => m.dateStr >= todayStr);
   const result = [];
@@ -46,7 +53,7 @@ function renderCards(bodyEl) {
   const cards = Array.from({ length: 8 }, (_, i) => {
     const d = new Date(now);
     d.setDate(d.getDate() + i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const entry = marketForDate(dateStr);
 
     const label = i === 0 ? "היום" : i === 1 ? "מחר" : HE_DAYS[d.getDay()];
