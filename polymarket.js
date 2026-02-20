@@ -80,8 +80,8 @@ function renderGraph(bodyEl) {
     return;
   }
 
-  const W = 600, H = 180;
-  const PAD = { top: 16, right: 16, bottom: 32, left: 16 };
+  const W = 600, H = 220;
+  const PAD = { top: 16, right: 16, bottom: 54, left: 16 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
 
@@ -145,7 +145,7 @@ function renderGraph(bodyEl) {
         day: "numeric", month: "short",
       });
       parts.push(
-        `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 18).toFixed(1)}" text-anchor="middle">${dateLabel}</text>`
+        `<text class="poly-graph-axis-label" x="${x.toFixed(1)}" y="${(PAD.top + chartH + 26).toFixed(1)}" text-anchor="middle">${dateLabel}</text>`
       );
     }
   }
