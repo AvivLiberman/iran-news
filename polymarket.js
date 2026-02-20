@@ -157,12 +157,12 @@ function renderGraph(bodyEl) {
   const last = data.length - 1;
   const mid  = Math.round(last / 2);
 
-  /* value labels for first and middle points (skip if already the peak) */
-  const valueIndices = [0, mid].filter((i) => i !== peakIdx && i < data.length);
+  /* value labels for first, middle, and last points (skip if already the peak) */
+  const valueIndices = [...new Set([0, mid, last])].filter((i) => i !== peakIdx && i < data.length);
   for (const i of valueIndices) {
     const vx = xOf(i);
     const vy = yOf(pcts[i]);
-    const anchor = i === 0 ? "start" : "middle";
+    const anchor = i === 0 ? "start" : i === last ? "end" : "middle";
     parts.push(
       `<circle cx="${vx.toFixed(1)}" cy="${vy.toFixed(1)}" r="3" class="poly-graph-peak-dot"/>`,
       `<text class="poly-graph-peak-label" x="${vx.toFixed(1)}" y="${(vy - 8).toFixed(1)}" text-anchor="${anchor}">${pcts[i].toFixed(1)}%</text>`
